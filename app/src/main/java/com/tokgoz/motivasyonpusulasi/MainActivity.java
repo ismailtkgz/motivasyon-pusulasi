@@ -2,12 +2,18 @@ package com.tokgoz.motivasyonpusulasi;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,25 +22,13 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    public TextView quoteTextView;
-    public Button nextButton, favoriteButton, viewFavoritesButton;
-    public Button buttonPrevious;
+    private TextView quoteTextView;
+    private Button nextButton, favoriteButton, viewFavoritesButton;
+    private Button buttonPrevious;
+    private Random random = new Random();
 
 
-
-
-    private final ArrayList<String> quotes = new ArrayList<>(Arrays.asList(
-            "Başarı, küçük çabaların tekrar edilmesiyle gelir.",
-            "Dünya değişimle dolu; sen de değişim yaratabilirsin.",
-            "Bugün harika şeyler yapmak için mükemmel bir gün!",
-            "Hayallerine inan ve onları takip et.",
-            "Her gün yeni bir başlangıçtır.",
-            "Her gün bir adım daha at, hayallerin seni bekliyor.",
-            "Başarısızlık, başarıya açılan bir kapıdır. Yeter ki denemekten vazgeçme!",
-            "Küçük adımlar büyük zaferlere götürür.",
-            "Bugün yapacağın küçük bir çaba, yarın büyük farklar yaratır.",
-            "Kendi ışığını bul ve yoluna devam et, başkalarının gölgesine ihtiyacın yok!"
-    ));
+    private ArrayList<String> quotes = new ArrayList<>();
     public String currentQuote = "";
 
     public SharedPreferences sharedPreferences;
@@ -70,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRandomQuote() {
-        Random random = new Random();
+        readFromAssets();
         currentQuote = quotes.get(random.nextInt(quotes.size()));
         quoteTextView.setText(currentQuote);
     }
@@ -81,5 +75,18 @@ public class MainActivity extends AppCompatActivity {
         updatedFavorites.add(currentQuote);
         editor.putStringSet("favorites", updatedFavorites);
         editor.apply();
+    }
+
+    private void readFromAssets() {
+        AssetManager assetManager = getAssets();
+        try (InputStream inputStream = assetManager.open("quotes.txt")) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                quotes.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
