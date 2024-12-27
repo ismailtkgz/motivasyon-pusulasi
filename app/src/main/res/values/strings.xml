@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MotivasyonPusulasi</string>
+    <string name="next">Sonraki</string>
+    <string name="addFavorites">Favorilere Ekle</string>
+    <string name="myFavorites">Favorilerim</string>
+    <string name="previous">Önceki</string>
+    <string name="clearAll">Tümünü Sil</string>
+</resources>
